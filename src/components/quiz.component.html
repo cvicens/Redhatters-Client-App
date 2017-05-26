@@ -1,0 +1,12 @@
+<ion-item>
+  <ion-label floating>Message</ion-label>
+  <ion-input type="text" [(ngModel)]="message"></ion-input>
+</ion-item>
+
+<div padding>
+  <button ion-button color="primary" (click)="sendMessage()" block>Send</button>
+</div>
+
+<ion-list>
+  <ion-item *ngFor="let question of questions">{{question}}</ion-item>
+</ion-list>

@@ -4,7 +4,11 @@ import * as $fh from 'fh-js-sdk';
 
 @Injectable()
 export class FHService {
-    sayHello = (endpoint: string, method: string, name: string) => {
+  getUrl = () => {
+    return $fh.getCloudURL();
+  }
+
+  sayHello = (endpoint: string, method: string, name: string) => {
     return new Promise<any>(function(resolve, reject) {
       var params = {
           path: endpoint,
