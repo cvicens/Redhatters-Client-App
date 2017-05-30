@@ -7,7 +7,6 @@ import { FHService } from '../services/fh.service';
 @Component({
   selector: 'quiz',
   templateUrl: './quiz.component.html',
-  //styleUrls: ['./quiz.component.scss'],
   providers: [SocketService, FHService]
 })
 export class QuizComponent implements OnInit, OnDestroy {

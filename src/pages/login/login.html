@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Feed Henry - Ionic v2</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding class="card-background-page">
+  <h2>Redhatter app, so much to do!</h2>
+  <p>
+    Please login...
+  </p>
+
+  <ion-item>
+    <ion-label floating>Username</ion-label>
+    <ion-input type="text" [(ngModel)]="username"></ion-input>
+  </ion-item>
+
+<ion-item>
+    <ion-label floating>Password</ion-label>
+    <ion-input type="text" [(ngModel)]="password"></ion-input>
+  </ion-item>
+
+  <div padding>
+    <button ion-button color="primary" (click)="login()" block>Login</button>
+  </div>
+
+  <ion-card  [hidden]="message.length <= 0">
+    {{message}}
+  </ion-card>
+
+</ion-content>

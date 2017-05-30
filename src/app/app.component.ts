@@ -6,6 +6,9 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 // Tabs
 import { TabsPage } from '../pages/tabs/tabs';
 
+// Login
+import { LoginPage } from '../pages/login/login';
+
 // Services
 import { FHService } from '../services/fh.service';
 
@@ -14,7 +17,7 @@ import { FHService } from '../services/fh.service';
   providers: [FHService] // Put your injectables here!
 })
 export class MyApp {
-  rootPage = TabsPage;
+  rootPage: any = LoginPage;
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
     platform.ready().then(() => {

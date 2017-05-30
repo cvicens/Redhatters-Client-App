@@ -1,0 +1,17 @@
+
+ <ion-list *ngFor="let day of agenda; let j = index; trackBy: day">
+
+    <ion-list-header >
+    Day {{day.day}}
+    </ion-list-header>
+
+
+    
+
+    <ion-item-group *ngFor="let segment of day.segments; let k = index; trackBy: slot">
+    <ion-item-divider color="light">{{segment.slot}}</ion-item-divider>
+    <ion-item *ngFor="let session of segment.sessions; let l = index; trackBy: objectId">{{session.title}}</ion-item>
+    </ion-item-group>
+
+
+</ion-list>
