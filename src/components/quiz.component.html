@@ -36,7 +36,7 @@
     <ion-col>
       <button ion-button icon-left clear small>
         <ion-icon name="text"></ion-icon>
-        <div>{{questions.length}} Questions so far</div>
+        <div>{{pastQuestions.length}} Questions so far</div>
       </button>
     </ion-col>
     <ion-col center text-center>
@@ -48,13 +48,13 @@
 
 </ion-card>
 
-<ion-list *ngIf="questions && questions.length > 0">
+<ion-list *ngIf="pastQuestions && pastQuestions.length > 0">
 
   <ion-list-header >
   Previous questions
   </ion-list-header>
 
-  <ion-item *ngFor="let question of questions">
+  <ion-item *ngFor="let question of pastQuestions">
     <p>{{question.question}}</p> 
     <p>{{question.choices[question.submittedAnswer]}}</p>
   </ion-item>

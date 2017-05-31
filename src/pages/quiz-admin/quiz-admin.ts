@@ -4,7 +4,6 @@ import { NavController } from 'ionic-angular';
 
 // Services (they have to be added to the providers array in ../../app.component.ts)
 import { FHService } from '../../services/fh.service';
-import { SocketService } from '../../services/socket.service';
 import { StateService } from '../../services/state.service';
 
 // Model

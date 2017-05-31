@@ -13,8 +13,6 @@ import { StateService } from '../services/state.service';
   //providers: [SocketService, FHService]
 })
 export class QuizAdminComponent implements OnInit, OnDestroy {
-  @Input() quiz: Quiz;
-
   quizStarted: boolean = false;
   startQuizConnection;
   stopQuizConnection

@@ -3,15 +3,22 @@ import { Injectable } from '@angular/core';
 import * as Immutable from 'immutable';
 
 import { Event } from '../model/event';
+import { Quiz } from '../model/quiz';
 
 @Injectable()
 export class StateService {
   state = Immutable.Map({
+    username: null,
     eventId: null,
     quizId: null,
-    events: null
+    events: null,
+    liveQuiz: null
   });
   
+  getUsername() {
+    return this.state.get('username');
+  }
+
   getEvents() {
     return this.state.get('events');
   }
@@ -24,6 +31,14 @@ export class StateService {
     return this.state.get('quizId');
   }
 
+  getLiveQuiz() {
+    return this.state.get('liveQuiz');
+  }
+
+  updateUsername(username: string) {
+    this.state = this.state.merge({ username: username });
+  }
+
   updateEvents(events: Event[]) {
     this.state = this.state.merge({ events: events });
   }
@@ -34,5 +49,9 @@ export class StateService {
 
   updateQuizId(quizId: string) {
     this.state = this.state.merge({ quizId: quizId });
+  }
+
+  updateLiveQuiz(liveQuiz: Quiz) {
+    this.state = this.state.merge({ liveQuiz: liveQuiz });
   }
 }

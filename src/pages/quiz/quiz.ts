@@ -15,7 +15,6 @@ import { Quiz } from '../../model/quiz';
 })
 export class QuizPage {
   quiz: Quiz;
-
   message: string;
 
   constructor(public navCtrl: NavController, private fhService: FHService, private stateService: StateService) {
@@ -24,20 +23,21 @@ export class QuizPage {
 
   // 
   ngOnInit() {
-    this.getQuizById(this.stateService.getQuizId());
+    this.getQuizById(this.stateService.getEventId(), this.stateService.getQuizId());
   }
 
   // 
   ngOnDestroy() {
   }
 
-  getQuizById(id: string) {
+  getQuizById(eventId: string, quizId: string) {
     console.log('Before calling getQuizById endpoint');
 
     this.message = 'Before calling...';
 
-    this.fhService.getQuizById(id)
+    this.fhService.getLiveQuizById(eventId, quizId)
     .then( (quiz) => {
+      this.stateService.updateLiveQuiz(quiz);
       this.quiz = quiz;
     })
     .catch( (err) => {

@@ -1,14 +1,22 @@
 import { Injectable } from '@angular/core';
 
+// Services
+import { StateService } from './state.service';
+
 import * as $fh from 'fh-js-sdk';
 
 @Injectable()
 export class FHService {
+  constructor(private stateService: StateService) {
+
+  }
+
   getUrl = () => {
     return $fh.getCloudURL();
   }
 
   login = (username: string, password: string) => {
+    
     return new Promise<any>(function(resolve, reject) {
         var params = {
           path: 'login',
@@ -20,10 +28,10 @@ export class FHService {
 
       $fh.cloud(
         params, 
-        function(data) {
+        (data) => {
           resolve(data);
         }, 
-        function(msg, err) {
+        (msg, err) => {
           // An error occurred during the cloud call. Alert some debugging information
           console.log('Cloud call failed with error message:' + msg + '. Error properties:' + JSON.stringify(err));
           reject({msg: msg, err: err});
@@ -128,6 +136,32 @@ export class FHService {
           path: 'quizzes?id=' + id,
           method: 'GET',
           contentType: "application/json",
+          timeout: 15000
+        };
+
+      $fh.cloud(
+        params, 
+        function(data) {
+          resolve(data);
+        }, 
+        function(msg, err) {
+          // An error occurred during the cloud call. Alert some debugging information
+          console.log('Cloud call failed with error message:' + msg + '. Error properties:' + JSON.stringify(err));
+          reject({msg: msg, err: err});
+        });
+    });
+  }
+
+  getLiveQuizById = (eventId: string, quizId: string) => {
+    return new Promise<any>(function(resolve, reject) {
+        if (!eventId || !quizId) {
+          reject({err: 'Not enough or good parameters eventId: ' + eventId + ' quizId: ' + quizId});
+        }
+        var params = {
+          path: 'live/quiz',
+          method: 'GET',
+          contentType: "application/json",
+          data: {eventId: eventId, quizId: quizId},
           timeout: 15000
         };
 
