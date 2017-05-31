@@ -5,6 +5,7 @@ import { HomePage } from '../home/home';
 import { QuizPage } from '../quiz/quiz';
 import { AboutPage } from '../about/about';
 import { ContactPage } from '../contact/contact';
+import { QuizAdminPage } from '../quiz-admin/quiz-admin';
 
 @Component({
   templateUrl: 'tabs.html'
@@ -16,6 +17,7 @@ export class TabsPage {
   tab1Root: any = AgendaPage;
   tab2Root: any = QuizPage;
   tab3Root: any = ContactPage;
+  tab4Root: any = QuizAdminPage;
 
   constructor() {
 

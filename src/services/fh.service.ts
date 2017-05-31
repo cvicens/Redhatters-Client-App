@@ -118,4 +118,29 @@ export class FHService {
         });
     });
   }
+
+  getQuizById = (id: string) => {
+    return new Promise<any>(function(resolve, reject) {
+        if (!id) {
+          reject({err: 'Not enough or good parameters id: ' + id});
+        }
+        var params = {
+          path: 'quizzes?id=' + id,
+          method: 'GET',
+          contentType: "application/json",
+          timeout: 15000
+        };
+
+      $fh.cloud(
+        params, 
+        function(data) {
+          resolve(data);
+        }, 
+        function(msg, err) {
+          // An error occurred during the cloud call. Alert some debugging information
+          console.log('Cloud call failed with error message:' + msg + '. Error properties:' + JSON.stringify(err));
+          reject({msg: msg, err: err});
+        });
+    });
+  }
 }

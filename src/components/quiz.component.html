@@ -1,54 +1,42 @@
-<ion-item>
-  <ion-label floating>Message</ion-label>
-  <ion-input type="text" [(ngModel)]="message"></ion-input>
-</ion-item>
+<ion-card *ngIf="!currentQuestion">
+  <ion-card-header>
+    Question
+  </ion-card-header>
+  <ion-card-content>
+    <p>No questions received yet</p>
+  </ion-card-content>
+</ion-card>
 
-<div padding>
-  <button ion-button color="primary" (click)="sendMessage()" block>Send</button>
-</div>
-
-<ion-card>
+<ion-card *ngIf="currentQuestion">
   <ion-card-header>
     Question
   </ion-card-header>
 
-  <ion-card-content *ngIf="lastQuestion">
-    <p>{{lastQuestion.data}}</p>
+  <ion-card-content>
+    <p>{{currentQuestion.question}}</p>
   </ion-card-content>
 
-  <ion-list radio-group>
+  <ion-list radio-group  [(ngModel)]="currentAnswer">
     <ion-list-header>
       Answers
     </ion-list-header>
 
-    <ion-item>
-      <ion-label>Go</ion-label>
-      <ion-radio checked="true" value="go"></ion-radio>
+    <ion-item *ngFor="let choice of currentQuestion.choices; let i = index">
+      <ion-label>{{choice}}</ion-label>
+      <ion-radio value="{{i}}" [disabled]="currentAnswerSubmitted()"></ion-radio>
     </ion-item>
 
-    <ion-item>
-      <ion-label>Rust</ion-label>
-      <ion-radio value="rust"></ion-radio>
-    </ion-item>
-
-    <ion-item>
-      <ion-label>Python</ion-label>
-      <ion-radio value="python" disabled="false"></ion-radio>
-    </ion-item>
   </ion-list>
 
+<div padding>
+  <button ion-button color="primary" [disabled]="!answerReady()" (click)="submitAnswer()" block>Submit</button>
+</div>
 
   <ion-row>
     <ion-col>
       <button ion-button icon-left clear small>
-        <ion-icon name="thumbs-up"></ion-icon>
-        <div>12 Likes</div>
-      </button>
-    </ion-col>
-    <ion-col>
-      <button ion-button icon-left clear small>
         <ion-icon name="text"></ion-icon>
-        <div>4 Comments</div>
+        <div>{{questions.length}} Questions so far</div>
       </button>
     </ion-col>
     <ion-col center text-center>
@@ -60,6 +48,14 @@
 
 </ion-card>
 
-<ion-list>
-  <ion-item *ngFor="let question of questions">{{question}}</ion-item>
+<ion-list *ngIf="questions && questions.length > 0">
+
+  <ion-list-header >
+  Previous questions
+  </ion-list-header>
+
+  <ion-item *ngFor="let question of questions">
+    <p>{{question.question}}</p> 
+    <p>{{question.choices[question.submittedAnswer]}}</p>
+  </ion-item>
 </ion-list>

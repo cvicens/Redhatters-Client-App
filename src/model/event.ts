@@ -10,6 +10,7 @@ export class Event {
   date: string;
   startTime: string;
   endTime: string;
-  quiz: Quiz;
+  quizId: string;
+  //quiz: Quiz;
   agenda: Agenda;
 }
