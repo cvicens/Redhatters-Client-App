@@ -35,7 +35,9 @@ export class QuizComponent implements OnInit, OnDestroy {
     this.message = '';
   }
 
-  submitAnswer(){
+  submitAnswer() {
+    
+    this.currentQuestion.submittedAnswer = this.currentAnswer;
     this.pastQuestions[this.currentQuestionIndex].submittedAnswer = this.currentAnswer;
   }
 
@@ -58,7 +60,7 @@ export class QuizComponent implements OnInit, OnDestroy {
       this.stateService.updateLiveQuiz(liveQuiz);
       this.liveQuiz = liveQuiz;
       this.currentQuestionIndex = this.liveQuiz.currentQuestionIndex;
-      this.pastQuestions = this.liveQuiz.quiz ? this.liveQuiz.quiz.questions.slice(0, this.currentQuestionIndex ) : [];
+      this.pastQuestions = this.liveQuiz.quiz ? this.liveQuiz.quiz.questions.slice(0, this.currentQuestionIndex + 1) : [];
       this.currentQuestion = this.liveQuiz.quiz.questions[this.currentQuestionIndex];
     })
     .catch( (err) => {
