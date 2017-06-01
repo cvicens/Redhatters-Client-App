@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import * as Immutable from 'immutable';
 
 import { Event } from '../model/event';
-import { Quiz } from '../model/quiz';
+import { LiveQuiz } from '../model/live-quiz';
 
 @Injectable()
 export class StateService {
@@ -51,7 +51,7 @@ export class StateService {
     this.state = this.state.merge({ quizId: quizId });
   }
 
-  updateLiveQuiz(liveQuiz: Quiz) {
+  updateLiveQuiz(liveQuiz: LiveQuiz) {
     this.state = this.state.merge({ liveQuiz: liveQuiz });
   }
 }

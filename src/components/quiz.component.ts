@@ -36,7 +36,20 @@ export class QuizComponent implements OnInit, OnDestroy {
   }
 
   submitAnswer() {
-    
+    this.fhService.submitAnswer(
+      this.stateService.getEventId(), 
+      this.stateService.getQuizId(), 
+      this.stateService.getUsername(), 
+      this.currentQuestionIndex, 
+      this.currentAnswer)
+    .then((response) => {
+      console.log('submitAnswer response', response);
+    })
+    .catch( (err) => {
+      console.log(err);
+      this.message = JSON.stringify(err);
+    });
+
     this.currentQuestion.submittedAnswer = this.currentAnswer;
     this.pastQuestions[this.currentQuestionIndex].submittedAnswer = this.currentAnswer;
   }

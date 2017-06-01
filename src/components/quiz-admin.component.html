@@ -5,7 +5,7 @@
   <button ion-button color="primary" (click)="stopQuiz()" block>Stop Quiz</button>
 </div>
 <div padding>
-  <button ion-button color="primary" (click)="nextQuestion()" block>Next Question</button>
+  <button [disabled]="!nextButtonEnabled()" ion-button color="primary" (click)="nextQuestion()" block>Next Question</button>
 </div>
 
 <quiz ></quiz>

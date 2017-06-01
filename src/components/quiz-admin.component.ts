@@ -7,6 +7,9 @@ import { Quiz } from '../model/quiz';
 import { SocketService } from '../services/socket.service';
 import { StateService } from '../services/state.service';
 
+// Model
+import { LiveQuiz } from '../model/live-quiz';
+
 @Component({
   selector: 'quiz-admin',
   templateUrl: './quiz-admin.component.html',
@@ -14,8 +17,10 @@ import { StateService } from '../services/state.service';
 })
 export class QuizAdminComponent implements OnInit, OnDestroy {
   quizStarted: boolean = false;
+  quizEnded: boolean = false;
   startQuizConnection;
-  stopQuizConnection
+  stopQuizConnection;
+  lastQuestionConnection;
 
   constructor(private socketService: SocketService, private stateService: StateService) {
 
@@ -36,16 +41,28 @@ export class QuizAdminComponent implements OnInit, OnDestroy {
     this.socketService.nextQuestion(this.stateService.getEventId(), this.stateService.getQuizId());
   }
 
+  nextButtonEnabled () {
+    //return this.quizStarted && !this.quizEnded;
+    return !this.quizEnded;
+  }
+
   // Let's subscribe our Observable
   ngOnInit() {
     // TODO type this message!
     this.startQuizConnection = this.socketService.getStartQuizEvent().subscribe((message: any) => {
       console.log('QuizAdmin: start-quiz received', message);
       this.quizStarted = true;
+      this.quizEnded = false;
     });
     this.stopQuizConnection = this.socketService.getStopQuizEvent().subscribe((message: any) => {
       console.log('QuizAdmin: stop-quiz received', message);
       this.quizStarted = false;
+      this.quizEnded = true;
+    });
+
+    this.lastQuestionConnection = this.socketService.getLastQuestionEvent().subscribe((message: any) => {
+      console.log('QuizAdmin: last-question received', message);
+      this.quizEnded = true;
     });
   }
 
@@ -53,6 +70,7 @@ export class QuizAdminComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.startQuizConnection.unsubscribe();
     this.stopQuizConnection.unsubscribe();
+    this.lastQuestionConnection.unsubscribe();
   }
 
 }

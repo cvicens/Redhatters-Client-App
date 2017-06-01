@@ -1,28 +1,40 @@
-<ion-header>
-  <ion-navbar>
-    <ion-title>Feed Henry - Ionic v2</ion-title>
-  </ion-navbar>
-</ion-header>
-
 <ion-content padding class="card-background-page">
   <h2>Redhatter app, so much to do!</h2>
-  <p>
-    Please login...
-  </p>
 
-  <ion-item>
-    <ion-label floating>Username</ion-label>
-    <ion-input type="text" [(ngModel)]="username"></ion-input>
-  </ion-item>
+  <p *ngIf="submitAttempt" style="color: #ea6153;">Please fill out all details accurately.</p>
+  
+  <ion-list no-lines>
+  
+      <form [formGroup]="loginForm">
+  
+          <ion-item>
+              <ion-label floating>Username Name</ion-label>
+              <ion-input formControlName="username" type="text"></ion-input>
+          </ion-item>
+  
+          <ion-item *ngIf="!loginForm.controls.username.valid && !loginForm.controls.username.pending && (loginForm.controls.username.dirty || submitAttempt)">
+                <p>Sorry, username can not be empty!</p>
+          </ion-item>
 
-<ion-item>
-    <ion-label floating>Password</ion-label>
-    <ion-input type="text" [(ngModel)]="password"></ion-input>
-  </ion-item>
+          <ion-item>
+              <ion-label floating>Password</ion-label>
+              <ion-input formControlName="password" type="text"></ion-input>
+          </ion-item>
 
-  <div padding>
-    <button ion-button color="primary" (click)="login()" block>Login</button>
-  </div>
+           <ion-item *ngIf="!loginForm.controls.password.valid && !loginForm.controls.password.pending && (loginForm.controls.password.dirty || submitAttempt)">
+                <p>Sorry, password can not be empty!</p>
+          </ion-item>
+    
+          <div padding>
+          <button ion-button color="primary" (click)="login()" block>Login</button>
+          </div>
+      </form>
+  
+  </ion-list>
+
+
+
+
 
   <ion-card  [hidden]="message.length <= 0">
     {{message}}

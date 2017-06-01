@@ -17,6 +17,7 @@ var STOP_QUIZ_OK_MESSAGE  = 'stop-quiz-ok';
 var STOP_QUIZ_KO_MESSAGE  = 'stop-quiz-ko';
 var NEXT_QUESTION_MESSAGE = 'next-question';
 var NEW_QUESTION_MESSAGE  = 'new-question';
+var LAST_QUESTION_MESSAGE = 'last-question';
 
 @Injectable()
 export class SocketService {
@@ -85,6 +86,25 @@ export class SocketService {
         //this.socket.disconnect();
         // So if unsubcribed... no more calling next... we don't close the socket because we need it for other subscribers
         this.socket.on(STOP_QUIZ_OK_MESSAGE, (data) => {
+          ;   
+        });
+      }; 
+    });
+
+    return observable;
+  }
+
+  getLastQuestionEvent() {
+    let observable = new Observable(observer => {
+      
+      this.socket.on(LAST_QUESTION_MESSAGE, (data) => {
+        observer.next(data);   
+      });
+
+      return () => {
+        //this.socket.disconnect();
+        // So if unsubcribed... no more calling next... we don't close the socket because we need it for other subscribers
+        this.socket.on(LAST_QUESTION_MESSAGE, (data) => {
           ;   
         });
       }; 

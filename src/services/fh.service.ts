@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 
+import {Md5} from 'ts-md5/dist/md5';
+
 // Services
 import { StateService } from './state.service';
 
@@ -9,6 +11,14 @@ import * as $fh from 'fh-js-sdk';
 export class FHService {
   constructor(private stateService: StateService) {
 
+  }
+
+  getFormattedTime(date) {
+    return ('0' + date.getHours()).slice(-2) + ':' + ('0' + (date.getMinutes()+1)).slice(-2);
+  }
+
+  getFormattedDate(date) {
+    return  date.getFullYear() + ('0' + (date.getMonth()+1)).slice(-2) + ('0' + date.getDate()).slice(-2);
   }
 
   getUrl = () => {
@@ -162,6 +172,41 @@ export class FHService {
           method: 'GET',
           contentType: "application/json",
           data: {eventId: eventId, quizId: quizId},
+          timeout: 15000
+        };
+
+      $fh.cloud(
+        params, 
+        function(data) {
+          resolve(data);
+        }, 
+        function(msg, err) {
+          // An error occurred during the cloud call. Alert some debugging information
+          console.log('Cloud call failed with error message:' + msg + '. Error properties:' + JSON.stringify(err));
+          reject({msg: msg, err: err});
+        });
+    });
+  }
+
+  submitAnswer (eventId: string, quizId: string, username: string, question: number, answer: number) {
+    var _this = this;
+    return new Promise<any>(function(resolve, reject) {
+        if (!eventId || !quizId) {
+          reject({err: 'Not enough or good parameters eventId: ' + eventId + ' quizId: ' + quizId});
+        }
+        
+        var date: string = _this.getFormattedDate(new Date());
+        var payload: any = {username: username, eventId: eventId, quizId: quizId, date: date, question: question}
+        // id is not part of the MD5 for obvious reasons, 
+        payload.id = Md5.hashAsciiStr(JSON.stringify(payload));
+        // answer is not because different answers are not allowed
+        payload.answer = answer;
+
+        var params = {
+          path: 'answers',
+          method: 'POST',
+          contentType: "application/json",
+          data: payload,
           timeout: 15000
         };
 
