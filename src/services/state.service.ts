@@ -9,6 +9,7 @@ import { LiveQuiz } from '../model/live-quiz';
 export class StateService {
   state = Immutable.Map({
     username: null,
+    department: null,
     eventId: null,
     quizId: null,
     events: null,
@@ -17,6 +18,10 @@ export class StateService {
   
   getUsername() {
     return this.state.get('username');
+  }
+
+  getDepartment() {
+    return this.state.get('department');
   }
 
   getEvents() {
@@ -37,6 +42,10 @@ export class StateService {
 
   updateUsername(username: string) {
     this.state = this.state.merge({ username: username });
+  }
+
+  updateDepartment(department: string) {
+    this.state = this.state.merge({ department: department });
   }
 
   updateEvents(events: Event[]) {

@@ -16,9 +16,23 @@
                 <p>Sorry, username can not be empty!</p>
           </ion-item>
 
+          
+          <ion-item>
+            <ion-label>Department</ion-label>
+            <ion-select formControlName="department">
+                <ion-option value="sales">Sales</ion-option>
+                <ion-option value="presales">Presales</ion-option>
+                <ion-option value="marketing">Marketing</ion-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-item *ngIf="!loginForm.controls.department.valid && !loginForm.controls.department.pending && (loginForm.controls.department.dirty || submitAttempt)">
+                <p>Sorry, department can not be empty!</p>
+          </ion-item>
+
           <ion-item>
               <ion-label floating>Password</ion-label>
-              <ion-input formControlName="password" type="text"></ion-input>
+              <ion-input formControlName="password" type="password"></ion-input>
           </ion-item>
 
            <ion-item *ngIf="!loginForm.controls.password.valid && !loginForm.controls.password.pending && (loginForm.controls.password.dirty || submitAttempt)">

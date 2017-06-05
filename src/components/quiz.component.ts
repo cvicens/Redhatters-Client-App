@@ -40,6 +40,7 @@ export class QuizComponent implements OnInit, OnDestroy {
       this.stateService.getEventId(), 
       this.stateService.getQuizId(), 
       this.stateService.getUsername(), 
+      this.stateService.getDepartment(), 
       this.currentQuestionIndex, 
       this.currentAnswer)
     .then((response) => {

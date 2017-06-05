@@ -188,7 +188,7 @@ export class FHService {
     });
   }
 
-  submitAnswer (eventId: string, quizId: string, username: string, question: number, answer: number) {
+  submitAnswer (eventId: string, quizId: string, username: string, department: string, question: number, answer: number) {
     var _this = this;
     return new Promise<any>(function(resolve, reject) {
         if (!eventId || !quizId) {
@@ -196,7 +196,7 @@ export class FHService {
         }
         
         var date: string = _this.getFormattedDate(new Date());
-        var payload: any = {username: username, eventId: eventId, quizId: quizId, date: date, question: question}
+        var payload: any = {eventId: eventId, quizId: quizId, date: date, username: username, department: department, question: question}
         // id is not part of the MD5 for obvious reasons, 
         payload.id = Md5.hashAsciiStr(JSON.stringify(payload));
         // answer is not because different answers are not allowed

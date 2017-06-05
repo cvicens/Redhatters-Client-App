@@ -25,6 +25,7 @@ export class LoginPage {
   constructor(public navCtrl: NavController, public formBuilder: FormBuilder, private fhService: FHService, private stateService: StateService) {
     this.loginForm = formBuilder.group({
         username: ['', Validators.compose([Validators.required])],
+        department: ['', Validators.compose([Validators.required])],
         password: ['', Validators.compose([Validators.required])]
     });
   }
@@ -41,6 +42,7 @@ export class LoginPage {
       .then( (result) => {
         // Lets update the state of the app...
         this.stateService.updateUsername(this.loginForm.value.username);
+        this.stateService.updateDepartment(this.loginForm.value.department);
         console.log('result', result);
         this.message = 'Login OK';
         this.navCtrl.setRoot(TabsPage);
