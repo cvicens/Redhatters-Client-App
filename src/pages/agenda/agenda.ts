@@ -49,6 +49,7 @@ export class AgendaPage implements OnInit, OnDestroy {
         // TODO Here we select the first event... it should be an actionSheet!
 
         this.event = this.events[0];
+        this.stateService.updateHashtag(this.event.hashtag);
         this.agenda = this.event.agenda;
 
         // Lets update the state of the app...

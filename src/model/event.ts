@@ -11,6 +11,7 @@ export class Event {
   startTime: string;
   endTime: string;
   quizId: string;
+  hashtag: string;
   //quiz: Quiz;
   agenda: Agenda;
 }

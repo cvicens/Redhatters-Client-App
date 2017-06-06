@@ -7,7 +7,7 @@
 
 
     <ion-item-group *ngFor="let segment of day.segments; let k = index; trackBy: slot">
-    <ion-item-divider color="light">{{segment.slot}}</ion-item-divider>
+    <ion-item-divider color="pale">{{segment.slot}}</ion-item-divider>
     <ion-item *ngFor="let session of segment.sessions; let l = index; trackBy: objectId">{{session.title}}</ion-item>
     </ion-item-group>
 

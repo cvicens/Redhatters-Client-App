@@ -13,6 +13,7 @@ export class StateService {
     eventId: null,
     quizId: null,
     events: null,
+    event: null,
     liveQuiz: null,
     userRoles: null
   });
@@ -27,6 +28,14 @@ export class StateService {
 
   getEvents() {
     return this.state.get('events');
+  }
+
+  getEvent() {
+    return this.state.get('event');
+  }
+
+  getHashtag() {
+    return this.state.get('hashtag');
   }
 
   getEventId() {
@@ -55,6 +64,14 @@ export class StateService {
 
   updateEvents(events: Event[]) {
     this.state = this.state.merge({ events: events });
+  }
+
+  updateEvent(events: Event) {
+    this.state = this.state.merge({ event: event });
+  }
+
+  updateHashtag(hashtag: string) {
+    this.state = this.state.merge({ hashtag: hashtag });
   }
 
   updateEventId(eventId: string) {
