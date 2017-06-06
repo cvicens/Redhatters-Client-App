@@ -13,7 +13,8 @@ export class StateService {
     eventId: null,
     quizId: null,
     events: null,
-    liveQuiz: null
+    liveQuiz: null,
+    userRoles: null
   });
   
   getUsername() {
@@ -40,6 +41,10 @@ export class StateService {
     return this.state.get('liveQuiz');
   }
 
+  getUserRoles() {
+    return this.state.get('userRoles');
+  }
+
   updateUsername(username: string) {
     this.state = this.state.merge({ username: username });
   }
@@ -62,5 +67,9 @@ export class StateService {
 
   updateLiveQuiz(liveQuiz: LiveQuiz) {
     this.state = this.state.merge({ liveQuiz: liveQuiz });
+  }
+
+  updateUserRoles(userRoles: string[]) {
+    this.state = this.state.merge({ userRoles: userRoles });
   }
 }

@@ -43,6 +43,7 @@ export class LoginPage {
         // Lets update the state of the app...
         this.stateService.updateUsername(this.loginForm.value.username);
         this.stateService.updateDepartment(this.loginForm.value.department);
+        this.stateService.updateUserRoles(result.roles);
         console.log('result', result);
         this.message = 'Login OK';
         this.navCtrl.setRoot(TabsPage);

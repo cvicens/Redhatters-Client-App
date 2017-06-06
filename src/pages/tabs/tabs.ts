@@ -7,6 +7,9 @@ import { AboutPage } from '../about/about';
 import { ContactPage } from '../contact/contact';
 import { QuizAdminPage } from '../quiz-admin/quiz-admin';
 
+// Services (they have to be added to the providers array in ../../app.component.ts)
+import { StateService } from '../../services/state.service';
+
 @Component({
   templateUrl: 'tabs.html'
 })
@@ -19,7 +22,14 @@ export class TabsPage {
   tab3Root: any = ContactPage;
   tab4Root: any = QuizAdminPage;
 
-  constructor() {
+  userRoles: string[];
 
+  constructor(private stateService: StateService) {
+    this.userRoles = this.stateService.getUserRoles ();
   }
+
+  isUserAdmin = () => {
+    return this.userRoles && this.userRoles.indexOf('ADMIN') !== -1;
+  }
+
 }
