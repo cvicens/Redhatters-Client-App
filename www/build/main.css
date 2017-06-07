@@ -18308,7 +18308,7 @@ ion-select {
 }
 
 .select-ios .select-placeholder {
-  color: #999;
+  color: #f4f4f4;
 }
 
 .select-ios .select-icon {
@@ -18327,7 +18327,7 @@ ion-select {
   border-top: 5px solid;
   border-right: 5px solid transparent;
   border-left: 5px solid transparent;
-  color: #999;
+  color: #f4f4f4;
   pointer-events: none;
 }
 
@@ -18336,7 +18336,7 @@ ion-select {
 }
 
 .select-md .select-placeholder {
-  color: #999;
+  color: #f4f4f4;
 }
 
 .select-md .item-select ion-label {
@@ -18359,7 +18359,7 @@ ion-select {
   border-top: 5px solid;
   border-right: 5px solid transparent;
   border-left: 5px solid transparent;
-  color: #999;
+  color: #f4f4f4;
   pointer-events: none;
 }
 
@@ -26798,26 +26798,8 @@ ion-navbar.toolbar {
   }
 }
 
-.card-background-page ion-card {
-  position: relative;
-  text-align: center;
-}
-
-.card-background-page .card-title {
-  position: absolute;
-  top: 36%;
-  font-size: 2.0em;
-  width: 100%;
-  font-weight: bold;
-  color: #fff;
-}
-
-.card-background-page .card-subtitle {
-  font-size: 1.0em;
-  position: absolute;
-  top: 52%;
-  width: 100%;
-  color: #fff;
+page-agenda h2 {
+  color: #32db64;
 }
 
 .card-background-page ion-card {
@@ -26840,22 +26822,69 @@ ion-navbar.toolbar {
   top: 52%;
   width: 100%;
   color: #fff;
+}
+
+page-home h2 {
+  color: #cc0000;
+}
+
+.card-background-page ion-card {
+  position: relative;
+  text-align: center;
+}
+
+.card-background-page .card-title {
+  position: absolute;
+  top: 36%;
+  font-size: 2.0em;
+  width: 100%;
+  font-weight: bold;
+  color: #fff;
+}
+
+.card-background-page .card-subtitle {
+  font-size: 1.0em;
+  position: absolute;
+  top: 52%;
+  width: 100%;
+  color: #fff;
+}
+
+login-page h2 {
+  color: #f4f4f4;
+  text-align: center;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  font-size: 2.3em;
 }
 
 login-page p {
-  font-size: 0.8em;
-  color: #d2d2d2;
+  color: #f4f4f4;
 }
 
 login-page ion-label, login-page .select-text {
-  margin-left: 10px;
+  color: #f4f4f4;
 }
 
 login-page ion-input, login-page ion-select, login-page ion-textarea {
-  background-color: #f2f2f2;
-  padding: 5px 10px;
+  color: #f4f4f4;
+}
+
+login-page .login-item {
+  color: #f4f4f4;
+  font-weight: 700;
+  background-color: transparent;
+  font-size: 1.5em;
 }
 
 login-page .invalid {
-  border: 1px solid #ea6153;
+  color: #f53d3d;
+}
+
+login-page .card-background-page {
+  background-image: url("../../assets/images/login-torre.jpg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
 }

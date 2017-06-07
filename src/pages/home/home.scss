@@ -1,5 +1,9 @@
 page-home {
 
+    h2 {
+        color: map-get($colors, primary)
+    }
+
 }
 
 .card-background-page {

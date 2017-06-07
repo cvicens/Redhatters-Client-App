@@ -40,6 +40,9 @@ $colors: (
   pale:       #ffcccc
 );
 
+$select-ios-icon-color: map-get($colors, light);
+$select-md-icon-color:  map-get($colors, light);
+
 $toolbar-background: #cd2027;
 $item-ios-divider-background: #ff9696;
 $item-md-divider-background: #ff9696;

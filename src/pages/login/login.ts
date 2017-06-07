@@ -12,9 +12,8 @@ import { FHService } from '../../services/fh.service';
 import { StateService } from '../../services/state.service';
 
 @Component({
-  selector: 'login',
-  templateUrl: './login.html',
-  //styleUrls: ['./login.scss']
+  selector: 'login-page',
+  templateUrl: './login.html'
 })
 export class LoginPage {
   loginForm: FormGroup;

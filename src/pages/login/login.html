@@ -1,5 +1,5 @@
 <ion-content padding class="card-background-page">
-  <h2>Redhatter app, so much to do!</h2>
+  <h2>Redhatters</h2>
 
   <p *ngIf="submitAttempt" style="color: #ea6153;">Please fill out all details accurately.</p>
   
@@ -7,17 +7,17 @@
   
       <form [formGroup]="loginForm">
   
-          <ion-item>
+          <ion-item class="login-item">
               <ion-label floating>Username Name</ion-label>
               <ion-input formControlName="username" type="text"></ion-input>
           </ion-item>
   
-          <ion-item *ngIf="!loginForm.controls.username.valid && !loginForm.controls.username.pending && (loginForm.controls.username.dirty || submitAttempt)">
-                <p>Sorry, username can not be empty!</p>
+          <ion-item class="login-item" *ngIf="!loginForm.controls.username.valid && !loginForm.controls.username.pending && (loginForm.controls.username.dirty || submitAttempt)">
+                <p class="invalid">Sorry, username can not be empty!</p>
           </ion-item>
 
           
-          <ion-item>
+          <ion-item class="login-item">
             <ion-label>Department</ion-label>
             <ion-select formControlName="department">
                 <ion-option value="sales">Sales</ion-option>
@@ -27,20 +27,20 @@
           </ion-item>
 
           <ion-item *ngIf="!loginForm.controls.department.valid && !loginForm.controls.department.pending && (loginForm.controls.department.dirty || submitAttempt)">
-                <p>Sorry, department can not be empty!</p>
+                <p lass="invalid">Sorry, department can not be empty!</p>
           </ion-item>
 
-          <ion-item>
+          <ion-item class="login-item">
               <ion-label floating>Password</ion-label>
               <ion-input formControlName="password" type="password"></ion-input>
           </ion-item>
 
            <ion-item *ngIf="!loginForm.controls.password.valid && !loginForm.controls.password.pending && (loginForm.controls.password.dirty || submitAttempt)">
-                <p>Sorry, password can not be empty!</p>
+                <p class="invalid">Sorry, password can not be empty!</p>
           </ion-item>
     
           <div padding>
-          <button ion-button color="primary" (click)="login()" block>Login</button>
+          <button ion-button color="primary" (click)="login()" block>Sign In</button>
           </div>
       </form>
   
