@@ -26882,7 +26882,7 @@ login-page .invalid {
 }
 
 login-page .card-background-page {
-  background-image: url("assets/images/login-torre.jpg");
+  background-image: url("../assets/images/login-torre.jpg");
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-position: center;
