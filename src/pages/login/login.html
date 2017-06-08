@@ -16,6 +16,14 @@
                 <p class="invalid">Sorry, username can not be empty!</p>
           </ion-item>
 
+          <ion-item class="login-item">
+              <ion-label floating>Password</ion-label>
+              <ion-input formControlName="password" type="password"></ion-input>
+          </ion-item>
+
+           <ion-item *ngIf="!loginForm.controls.password.valid && !loginForm.controls.password.pending && (loginForm.controls.password.dirty || submitAttempt)">
+                <p class="invalid">Sorry, password can not be empty!</p>
+          </ion-item>
           
           <ion-item class="login-item">
             <ion-label>Department</ion-label>
@@ -30,14 +38,7 @@
                 <p lass="invalid">Sorry, department can not be empty!</p>
           </ion-item>
 
-          <ion-item class="login-item">
-              <ion-label floating>Password</ion-label>
-              <ion-input formControlName="password" type="password"></ion-input>
-          </ion-item>
-
-           <ion-item *ngIf="!loginForm.controls.password.valid && !loginForm.controls.password.pending && (loginForm.controls.password.dirty || submitAttempt)">
-                <p class="invalid">Sorry, password can not be empty!</p>
-          </ion-item>
+          
     
           <div padding>
           <button ion-button color="primary" (click)="login()" block>Sign In</button>
