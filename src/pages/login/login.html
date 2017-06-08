@@ -1,7 +1,7 @@
 <ion-content padding class="card-background-page">
   <h2>Redhatters</h2>
 
-  <p *ngIf="submitAttempt" style="color: #ea6153;">Please fill out all details accurately.</p>
+  <p class="warning-message" *ngIf="submitAttempt" >Please fill out all details accurately</p>
   
   <ion-list no-lines>
   
@@ -21,12 +21,12 @@
               <ion-input formControlName="password" type="password"></ion-input>
           </ion-item>
 
-           <ion-item *ngIf="!loginForm.controls.password.valid && !loginForm.controls.password.pending && (loginForm.controls.password.dirty || submitAttempt)">
+           <ion-item class="login-item" *ngIf="!loginForm.controls.password.valid && !loginForm.controls.password.pending && (loginForm.controls.password.dirty || submitAttempt)">
                 <p class="invalid">Sorry, password can not be empty!</p>
           </ion-item>
           
-          <ion-item class="login-item">
-            <ion-label>Department</ion-label>
+          <ion-item class="login-select-item">
+            <ion-label >Department</ion-label>
             <ion-select formControlName="department">
                 <ion-option value="sales">Sales</ion-option>
                 <ion-option value="presales">Presales</ion-option>
@@ -36,8 +36,8 @@
             </ion-select>
           </ion-item>
 
-          <ion-item *ngIf="!loginForm.controls.department.valid && !loginForm.controls.department.pending && (loginForm.controls.department.dirty || submitAttempt)">
-                <p lass="invalid">Sorry, department can not be empty!</p>
+          <ion-item class="login-item"  *ngIf="!loginForm.controls.department.valid && !loginForm.controls.department.pending && (loginForm.controls.department.dirty || submitAttempt)">
+                <p class="invalid">Sorry, department can not be empty!</p>
           </ion-item>
 
           

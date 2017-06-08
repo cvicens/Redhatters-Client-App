@@ -26877,8 +26877,22 @@ login-page .login-item {
   font-size: 1.5em;
 }
 
+login-page .login-select-item {
+  color: #f4f4f4;
+  font-weight: 700;
+  background-color: transparent;
+  font-size: 1.5em;
+}
+
+login-page .warning-message {
+  text-align: center;
+  font-size: 1.3em;
+  font-weight: 500;
+  color: #ffcccc;
+}
+
 login-page .invalid {
-  color: #f53d3d;
+  color: #ffcccc;
 }
 
 login-page .card-background-page {

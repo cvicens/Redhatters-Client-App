@@ -26,8 +26,22 @@ login-page {
         font-size: 1.5em;
     }
 
+    .login-select-item {
+        color: map-get($colors, light);
+        font-weight: 700;
+        background-color: transparent;
+        font-size: 1.5em;
+    }
+
+    .warning-message {
+        text-align: center;
+        font-size: 1.3em;
+        font-weight: 500;
+        color: map-get($colors, pale);
+    }
+
     .invalid {
-        color: map-get($colors, danger);
+        color: map-get($colors, pale);
     }
 
     .card-background-page {
