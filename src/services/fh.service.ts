@@ -10,7 +10,7 @@ import * as $fh from 'fh-js-sdk';
 @Injectable()
 export class FHService {
   constructor(private stateService: StateService) {
-
+    
   }
 
   getFormattedTime(date) {

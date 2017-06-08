@@ -3,18 +3,11 @@ import { Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
-// Tabs
-import { TabsPage } from '../pages/tabs/tabs';
-
 // Login
 import { LoginPage } from '../pages/login/login';
 
-// Services
-import { FHService } from '../services/fh.service';
-
 @Component({
-  templateUrl: 'app.html',
-  providers: [FHService] // Put your injectables here!
+  templateUrl: 'app.html'
 })
 export class MyApp {
   rootPage: any = LoginPage;

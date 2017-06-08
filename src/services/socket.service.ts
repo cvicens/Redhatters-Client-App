@@ -30,6 +30,7 @@ export class SocketService {
     this.url = this.fhService.getUrl();
     //this.url = "http://localhost:8001";
     this.socket = io(this.url);
+    console.log('SocketService.url', this.url);
   }
 
   sendMessage(message){

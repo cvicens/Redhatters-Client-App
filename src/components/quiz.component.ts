@@ -107,6 +107,8 @@ export class QuizComponent implements OnInit, OnDestroy {
       this.currentQuestion = message.question;
       this.currentQuestionIndex = message.currentQuestionIndex;
       this.currentAnswer = -1;
+
+      //this.presentToast('Let\s go down the rabbit-hole!');
     });
 
     // TODO type this message!
@@ -117,7 +119,7 @@ export class QuizComponent implements OnInit, OnDestroy {
       this.currentQuestionIndex = -1;
       this.currentAnswer = -1;
 
-      this.presentToast('Quiz ended! Maybe the luck be with you!');
+      //this.presentToast('Quiz ended! Maybe the luck be with you!');
     });
   }
 
