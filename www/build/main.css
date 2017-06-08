@@ -26882,6 +26882,7 @@ login-page .login-select-item {
   font-weight: 700;
   background-color: transparent;
   font-size: 1.5em;
+  padding-top: 27px;
 }
 
 login-page .warning-message {

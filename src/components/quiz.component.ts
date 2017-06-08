@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { ToastController } from 'ionic-angular';
 
 // Model
 import { Quiz } from '../model/quiz';
@@ -26,7 +27,7 @@ export class QuizComponent implements OnInit, OnDestroy {
   startQuizConnection;
   stopQuizConnection;
 
-  constructor(private socketService: SocketService, private fhService: FHService, private stateService: StateService) {
+  constructor(public toastCtrl: ToastController, private socketService: SocketService, private fhService: FHService, private stateService: StateService) {
     
   }
 
@@ -115,6 +116,8 @@ export class QuizComponent implements OnInit, OnDestroy {
       this.currentQuestion = null;
       this.currentQuestionIndex = -1;
       this.currentAnswer = -1;
+
+      this.presentToast('Quiz ended! Maybe the luck be with you!');
     });
   }
 
@@ -127,5 +130,13 @@ export class QuizComponent implements OnInit, OnDestroy {
 
   ngAfterViewInit () {
     //console.log('>>>>>>>>>>> ' + this.quiz);
+  }
+
+  presentToast(message) {
+    let toast = this.toastCtrl.create({
+      message: message,
+      duration: 3000
+    });
+    toast.present();
   }
 }

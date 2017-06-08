@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { NavController } from 'ionic-angular';
+import { NavController, ToastController } from 'ionic-angular';
 
 // Tabs
 import { TabsPage } from '../tabs/tabs';
@@ -21,7 +21,7 @@ export class LoginPage {
 
   message: string = '';
 
-  constructor(public navCtrl: NavController, public formBuilder: FormBuilder, private fhService: FHService, private stateService: StateService) {
+  constructor(public navCtrl: NavController, public toastCtrl: ToastController, public formBuilder: FormBuilder, private fhService: FHService, private stateService: StateService) {
     this.loginForm = formBuilder.group({
         username: ['', Validators.compose([Validators.required])],
         department: ['', Validators.compose([Validators.required])],
@@ -50,9 +50,18 @@ export class LoginPage {
       .catch( (err) => {
         console.log(err);
         this.message = JSON.stringify(err);
+        this.presentToast(err.msg);
       });
     } 
 
+  }
+
+  presentToast(message) {
+    let toast = this.toastCtrl.create({
+      message: message,
+      duration: 3000
+    });
+    toast.present();
   }
 
 }
