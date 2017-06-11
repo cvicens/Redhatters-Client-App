@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
-import { NavController, ToastController } from 'ionic-angular';
+import { Platform, NavController, ToastController } from 'ionic-angular';
 
 // Services (they have to be added to the providers array in ../../app.component.ts)
 import { FHService } from '../../services/fh.service';
@@ -25,8 +25,16 @@ export class QuizPage implements OnInit, OnDestroy {
   startQuizConnection;
   stopQuizConnection;
 
-  constructor(public navCtrl: NavController, public toastCtrl: ToastController, private fhService: FHService, private socketService: SocketService, private stateService: StateService) {
-    
+  constructor (platform: Platform, public navCtrl: NavController, public toastCtrl: ToastController, private fhService: FHService, private socketService: SocketService, private stateService: StateService) {
+    platform.ready().then(() => {
+      platform.pause.subscribe(() => {
+        this.presentToast('App paused...');
+      });
+      platform.resume.subscribe(() => {
+        this.presentToast('App resumed...');
+        this.getQuizById(this.stateService.getEventId(), this.stateService.getQuizId());
+      });
+    });
   }
 
   //  
