@@ -51,7 +51,7 @@ export class LoginPage {
       .catch( (err) => {
         console.log(err);
         this.message = JSON.stringify(err);
-        this.presentToast(err.message);
+        this.presentToast('User/Password wrong or not found');
       });
     } 
 
