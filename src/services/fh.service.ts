@@ -44,7 +44,7 @@ export class FHService {
         (msg, err) => {
           // An error occurred during the cloud call. Alert some debugging information
           console.log('Cloud call failed with error message:' + msg + '. Error properties:' + JSON.stringify(err));
-          reject({msg: msg, err: err});
+          reject(msg);
         });
     });
   }
@@ -53,8 +53,8 @@ export class FHService {
     return new Promise<any>(function(resolve, reject) {
         // LDAP or Platform User Example
         $fh.auth({
-          "policyId": "My LDAP Auth Policy", // name of auth policy to use - see link:{ProductFeatures}#administration[Auth Policies Administration] for details on how to configure an auth policy
-          "clientToken": "myAppId", // Your App ID
+          "policyId": "Redhatters", // name of auth policy to use - see link:{ProductFeatures}#administration[Auth Policies Administration] for details on how to configure an auth policy
+          "clientToken": "e5fh23hxyk5gnc5ml75w44ti", // Your App ID
           "params": { // the parameters associated with the requested auth policy - see below for full details.
             "userId": username, 
             "password": password 

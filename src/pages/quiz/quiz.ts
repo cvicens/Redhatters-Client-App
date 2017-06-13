@@ -28,7 +28,7 @@ export class QuizPage implements OnInit, OnDestroy {
   constructor (platform: Platform, public navCtrl: NavController, public toastCtrl: ToastController, private fhService: FHService, private socketService: SocketService, private stateService: StateService) {
     platform.ready().then(() => {
       platform.pause.subscribe(() => {
-        this.presentToast('App paused...');
+        
       });
       platform.resume.subscribe(() => {
         this.presentToast('App resumed...');
