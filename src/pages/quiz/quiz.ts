@@ -32,7 +32,8 @@ export class QuizPage implements OnInit, OnDestroy {
       });
       platform.resume.subscribe(() => {
         this.presentToast('App resumed...');
-        this.getQuizById(this.stateService.getEventId(), this.stateService.getQuizId());
+        this.stateService.fetchLiveQuiz(this.stateService.getEventId(), this.stateService.getQuizId());
+        //this.getQuizById(this.stateService.getEventId(), this.stateService.getQuizId());
       });
     });
   }
