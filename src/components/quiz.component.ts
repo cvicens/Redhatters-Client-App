@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ToastController } from 'ionic-angular';
 
 // Model
@@ -13,6 +13,7 @@ import { StateService } from '../services/state.service';
 @Component({
   selector: 'quiz',
   templateUrl: './quiz.component.html',
+  changeDetection: ChangeDetectionStrategy.Default
   //providers: [SocketService, FHService]
 })
 export class QuizComponent implements OnInit, OnDestroy {
@@ -23,11 +24,8 @@ export class QuizComponent implements OnInit, OnDestroy {
   currentQuestionIndex: number = -1;
   currentAnswer: number = -1;
   message;
-  questionsConnection;
-  startQuizConnection;
-  stopQuizConnection;
 
-  constructor(public toastCtrl: ToastController, private socketService: SocketService, private fhService: FHService, private stateService: StateService) {
+  constructor(private cd: ChangeDetectorRef, public toastCtrl: ToastController, private socketService: SocketService, private fhService: FHService, private stateService: StateService) {
     
   }
 
@@ -37,23 +35,12 @@ export class QuizComponent implements OnInit, OnDestroy {
   }
 
   submitAnswer() {
-    this.fhService.submitAnswer(
-      this.stateService.getEventId(), 
-      this.stateService.getQuizId(), 
-      this.stateService.getUsername(), 
-      this.stateService.getDepartment(), 
-      this.currentQuestionIndex, 
-      this.currentAnswer)
-    .then((response) => {
-      console.log('submitAnswer response', response);
-    })
-    .catch( (err) => {
-      console.log(err);
-      this.message = JSON.stringify(err);
-    });
+    this.stateService.submitAnswerForCurrentQuestion(this.currentAnswer);
+  }
 
-    this.currentQuestion.submittedAnswer = this.currentAnswer;
-    this.pastQuestions[this.currentQuestionIndex].submittedAnswer = this.currentAnswer;
+  currentAnswerChanged () {
+    console.log('currentAnswerChanged', this.currentAnswer);
+    this.cd.detectChanges();
   }
 
   currentAnswerSubmitted() {
@@ -70,68 +57,47 @@ export class QuizComponent implements OnInit, OnDestroy {
 
     this.message = 'Before calling...';
 
-    this.fhService.getLiveQuizById(eventId, quizId)
-    .then( (liveQuiz) => {
-      this.stateService.updateLiveQuiz(liveQuiz);
-      this.liveQuiz = liveQuiz;
-      this.currentQuestionIndex = this.liveQuiz.currentQuestionIndex;
-      this.pastQuestions = this.liveQuiz.quiz ? this.liveQuiz.quiz.questions.slice(0, this.currentQuestionIndex + 1) : [];
-      this.currentQuestion = this.liveQuiz.quiz.questions[this.currentQuestionIndex];
-    })
-    .catch( (err) => {
-      console.log(err);
-      this.message = JSON.stringify(err);
-    });
+    this.stateService.fetchLiveQuiz(eventId, quizId);
 
   }
 
-  // Let's subscribe our Observable
   ngOnInit() {
+    // Subscribe to stateService observables
+    this.stateService.liveQuiz.subscribe(value => {
+      setTimeout(() => {
+      this.liveQuiz = value; 
+      console.log('🔥 Quiz: this.liveQuiz', this.liveQuiz);
+      this.cd.detectChanges();
+      },0);
+    });
+    this.stateService.currentQuestion.subscribe(value => {
+      setTimeout(() => {
+      this.currentQuestion = value; 
+      console.log('🔥 Quiz: this.currentQuestion', this.currentQuestion);
+      this.cd.detectChanges();
+      //this.presentToast('New question arrived!');
+      },0);
+    });
+    this.stateService.currentQuestionIndex.subscribe(value => {
+      this.currentQuestionIndex = value;
+      // Reset the current answer
+      this.currentAnswer = -1;
+      console.log('🔥 Quiz: this.currentQuestionIndex', this.currentQuestionIndex);
+      this.cd.detectChanges();
+    });
+    this.stateService.pastQuestions.subscribe(value => {
+      this.pastQuestions = value; 
+      console.log('🔥 Quiz: this.pastQuestions', this.pastQuestions);
+      this.cd.detectChanges();
+    });
+
+    // Get current live quiz data
     this.getLiveQuizById(this.stateService.getEventId(), this.stateService.getQuizId());
-
-    console.log('=====> this.quiz', this.liveQuiz);
-
-    // TODO type this message!
-    this.questionsConnection = this.socketService.getQuestions().subscribe((message: any) => {
-      console.log('Quiz: new question received', message);
-      this.pastQuestions.push(message.question);
-      this.currentQuestion = message.question;
-      this.currentQuestionIndex = message.currentQuestionIndex;
-      this.currentAnswer = -1;
-    });
-
-    // TODO type this message!
-    this.startQuizConnection = this.socketService.getStartQuizEvent().subscribe((message: any) => {
-      console.log('Quiz: start quiz received', message);
-      this.pastQuestions.push(message.question);
-      this.currentQuestion = message.question;
-      this.currentQuestionIndex = message.currentQuestionIndex;
-      this.currentAnswer = -1;
-
-      //this.presentToast('Let\s go down the rabbit-hole!');
-    });
-
-    // TODO type this message!
-    this.stopQuizConnection = this.socketService.getStopQuizEvent().subscribe((message: any) => {
-      console.log('Quiz: stop quiz received', message);
-      this.pastQuestions = [];
-      this.currentQuestion = null;
-      this.currentQuestionIndex = -1;
-      this.currentAnswer = -1;
-
-      //this.presentToast('Quiz ended! Maybe the luck be with you!');
-    });
   }
 
   // Let's unsubscribe our Observable
   ngOnDestroy() {
-    this.questionsConnection.unsubscribe();
-    this.startQuizConnection.unsubscribe();
-    this.stopQuizConnection.unsubscribe();
-  }
 
-  ngAfterViewInit () {
-    //console.log('>>>>>>>>>>> ' + this.quiz);
   }
 
   presentToast(message) {

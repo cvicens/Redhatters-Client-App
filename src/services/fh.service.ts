@@ -1,24 +1,38 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject } from "rxjs/Rx";
 
 import {Md5} from 'ts-md5/dist/md5';
 
 // Services
-import { StateService } from './state.service';
+//import { StateService } from './state.service';
 
 import * as $fh from 'fh-js-sdk';
 
+const READY_EVENT = 'fhready';
+const INIT_EVENT = 'fhready';
+
 @Injectable()
 export class FHService {
-  constructor(private stateService: StateService) {
-    
+  private _ready: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public readonly ready: Observable<boolean> = this._ready.asObservable();
+
+  constructor() {
+
+    $fh.once(INIT_EVENT, (event) => {
+      console.log('Service ready with url:', this.getUrl());
+      this._ready.next(true);
+    });
+    //$fh.once(READY_EVENT, (event) => {console.log('22222222222222', this.getUrl())});
   }
 
   getFormattedTime(date) {
     return ('0' + date.getHours()).slice(-2) + ':' + ('0' + (date.getMinutes()+1)).slice(-2);
   }
 
-  getFormattedDate(date) {
-    return  date.getFullYear() + ('0' + (date.getMonth()+1)).slice(-2) + ('0' + date.getDate()).slice(-2);
+  getFormattedDate(date, separator = '') {
+    var separator = separator ? separator : '';
+    return  date.getFullYear() + separator + ('0' + (date.getMonth()+1)).slice(-2) + separator + ('0' + date.getDate()).slice(-2);
   }
 
   getUrl = () => {
@@ -137,6 +151,38 @@ export class FHService {
     });
   }
 
+  getEventsForDate = (date) => {
+    let self = this;
+    return new Promise<any>(function(resolve, reject) {
+        if (!date) {
+          reject('Need a date object!');
+        }
+        var filter = {
+          eq: {
+            date: self.getFormattedDate(date, '-')
+          }
+        }
+        var params = {
+          path: 'events',
+          method: 'POST',
+          contentType: "application/json",
+          data: filter,
+          timeout: 15000
+        };
+
+      $fh.cloud(
+        params, 
+        function(data) {
+          resolve(data);
+        }, 
+        function(msg, err) {
+          // An error occurred during the cloud call. Alert some debugging information
+          console.log('Cloud call failed with error message:' + msg + '. Error properties:' + JSON.stringify(err));
+          reject({msg: msg, err: err});
+        });
+    });
+  }
+
   getQuizById = (id: string) => {
     return new Promise<any>(function(resolve, reject) {
         if (!id) {
@@ -189,13 +235,13 @@ export class FHService {
   }
 
   submitAnswer (eventId: string, quizId: string, username: string, department: string, question: number, answer: number) {
-    var _this = this;
+    let self = this;
     return new Promise<any>(function(resolve, reject) {
         if (!eventId || !quizId) {
           reject({err: 'Not enough or good parameters eventId: ' + eventId + ' quizId: ' + quizId});
         }
         
-        var date: string = _this.getFormattedDate(new Date());
+        var date: string = self.getFormattedDate(new Date());
         var payload: any = {eventId: eventId, quizId: quizId, date: date, username: username, department: department, question: question}
         // id is not part of the MD5 for obvious reasons, 
         payload.id = Md5.hashAsciiStr(JSON.stringify(payload));

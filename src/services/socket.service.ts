@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 //import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject } from "rxjs/Rx";
 
 // Services
 import { FHService } from './fh.service';
@@ -25,12 +26,33 @@ export class SocketService {
   private url; 
   private socket;
 
+  // Ready flag
+  private _ready: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public readonly ready: Observable<boolean> = this._ready.asObservable();
+
   constructor(private fhService: FHService) {
     console.log('New SocketService!!!!');
+
+    this.fhService.ready.subscribe(ready => {
+      if (ready) {
+        if(this.init()) {
+          this._ready.next(true);
+        }
+      }
+    });
+    
+  }
+
+  init () {
     this.url = this.fhService.getUrl();
+    if (!this.url) {
+      return false;
+    }
+    // Uncomment next line to enable sockets locally
     //this.url = "http://localhost:8001";
     this.socket = io(this.url);
     console.log('SocketService.url', this.url);
+    return true;
   }
 
   sendMessage(message){

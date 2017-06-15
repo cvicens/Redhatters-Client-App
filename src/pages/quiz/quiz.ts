@@ -75,7 +75,6 @@ export class QuizPage implements OnInit, OnDestroy {
     console.log("QuizPage >>>>>>> inactive");
   }
 
-
   presentToast(message) {
     if (this.viewActive) {
       let toast = this.toastCtrl.create({

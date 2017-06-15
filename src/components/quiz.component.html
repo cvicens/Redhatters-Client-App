@@ -16,7 +16,7 @@
     <p>{{currentQuestion.question}}</p>
   </ion-card-content>
 
-  <ion-list radio-group  [(ngModel)]="currentAnswer">
+  <ion-list radio-group  [(ngModel)]="currentAnswer" (ionChange)="currentAnswerChanged()">
     <ion-list-header>
       Answers
     </ion-list-header>
@@ -28,9 +28,9 @@
 
   </ion-list>
 
-<div padding>
-  <button ion-button color="primary" [disabled]="!answerReady()" (click)="submitAnswer()" block>Submit</button>
-</div>
+  <div padding>
+    <button ion-button color="primary" [disabled]="!answerReady()" (click)="submitAnswer()" block>Submit</button>
+  </div>
 
   <ion-row>
     <ion-col>
@@ -48,13 +48,14 @@
 
 </ion-card>
 
-<ion-list *ngIf="pastQuestions && pastQuestions.length > 0">
+<!--<ion-list *ngIf="pastQuestions && pastQuestions.length > 0">-->
+<ion-list *ngIf="stateService.pastQuestions">
 
   <ion-list-header >
   Previous questions
   </ion-list-header>
 
-  <ion-item *ngFor="let question of pastQuestions">
+  <ion-item *ngFor="let question of stateService.pastQuestions | async">
     <p>{{question.question}}</p> 
     <p>{{question.choices[question.submittedAnswer]}}</p>
   </ion-item>

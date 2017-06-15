@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
-import { NavController, ToastController } from 'ionic-angular';
+import { NavController, ToastController, ActionSheetController } from 'ionic-angular';
 
 // Services (they have to be added to the providers array in ../../app.component.ts)
 import { FHService } from '../../services/fh.service';
@@ -28,7 +28,7 @@ export class AgendaPage implements OnInit, OnDestroy {
   startQuizConnection;
   stopQuizConnection;
 
-  constructor(public navCtrl: NavController, public toastCtrl: ToastController, private socketService: SocketService, private fhService: FHService, private stateService: StateService) {
+  constructor(public navCtrl: NavController, public toastCtrl: ToastController, public actionSheetCtrl: ActionSheetController, private socketService: SocketService, private fhService: FHService, private stateService: StateService) {
 
   }
 
@@ -68,12 +68,25 @@ export class AgendaPage implements OnInit, OnDestroy {
     console.log("AgendaPage >>>>>>> inactive");
   }
 
+  chooseEvent(event) {
+    if (event) {
+      this.event = event;
+      this.stateService.updateHashtag(this.event.hashtag);
+      this.agenda = this.event.agenda;
+
+      // Lets update the state of the app...
+      this.stateService.updateEventId(this.event.id);
+      this.stateService.updateQuizId(this.event.quizId);
+    }
+  }
+
   getEvents() {
     console.log('Before calling getEvents endpoint');
 
     this.message = 'Before calling...';
 
-    this.fhService.getEventsAtLocationForToday('SPAIN', 'MADRID')
+    //this.fhService.getEventsAtLocationForToday('SPAIN', 'MADRID')
+    this.fhService.getEventsForDate(new Date())
     .then( (events) => {
       this.events = events;
       // Lets update the state of the app...
@@ -81,15 +94,11 @@ export class AgendaPage implements OnInit, OnDestroy {
 
       if (this.events !== null && this.events.length >= 1) {
         // TODO Here we select the first event... it should be an actionSheet!
-
-        this.event = this.events[0];
-        this.stateService.updateHashtag(this.event.hashtag);
-        this.agenda = this.event.agenda;
-
-        // Lets update the state of the app...
-        this.stateService.updateEventId(this.event.id);
-        this.stateService.updateQuizId(this.event.quizId);
-
+        if (this.events.length == 1) {
+          this.chooseEvent(this.events[0]);
+        } else {
+          this.presentActionSheet();
+        }
       } else {
         this.message = 'No events!';
       }
@@ -112,4 +121,23 @@ export class AgendaPage implements OnInit, OnDestroy {
     }
   } 
 
+  presentActionSheet() {
+    let buttons = this.events.map((event: Event) => {
+      return { text: event.city, role: null, handler: () => {
+            this.event = event;
+            this.chooseEvent(this.event);
+          }};
+    });
+    buttons.push({ text: 'Cancel', role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }});
+
+    let actionSheet = this.actionSheetCtrl.create({
+      title: 'Select Event',
+      buttons: buttons
+    });
+
+    actionSheet.present();
+  }
 }

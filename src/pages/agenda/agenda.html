@@ -5,7 +5,21 @@
 </ion-header>
 
 <ion-content padding class="card-background-page">
-  
+  <ion-card *ngIf="!event">
+  <ion-card-header>
+    Warning
+  </ion-card-header>
+  <ion-card-content>
+    <p>No events were selected!</p>
+    <p>Click on the button to select one.</p>
+  </ion-card-content>
+  <ion-row>
+    <ion-col>
+    <button ion-button full (click)="getEvents()">Select event</button>
+    </ion-col>
+  </ion-row>
+  </ion-card>
+
   <agenda [agenda]="agenda" [title]="'My title'">
   </agenda>
 
