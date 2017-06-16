@@ -1,6 +1,11 @@
 <ion-header>
   <ion-navbar>
     <ion-title>Agenda</ion-title>
+    <ion-buttons end *ngIf="events?.length > 10"> <!-- should be > 1 but switching event won't work unless joining a new room inplies leaving the previous one' -->
+      <button ion-button icon-only (click)="presentActionSheet()">
+        <ion-icon name="search"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
@@ -20,7 +25,7 @@
   </ion-row>
   </ion-card>
 
-  <agenda [agenda]="agenda" [title]="'My title'">
+  <agenda [agenda]="agenda" [title]="'My title'" [event]="event">
   </agenda>
 
 </ion-content>

@@ -3,7 +3,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NavController, ToastController } from 'ionic-angular';
 
 // Services (they have to be added to the providers array in ../../app.component.ts)
-import { SocketService } from '../../services/socket.service';
 import { StateService } from '../../services/state.service';
 
 @Component({
@@ -16,11 +15,7 @@ export class ContactPage implements OnInit, OnDestroy {
   // Is view active?
   viewActive: boolean = false;
 
-  // Observables...
-  startQuizConnection;
-  stopQuizConnection;
-
-  constructor(public navCtrl: NavController, public toastCtrl: ToastController, private socketService: SocketService, private stateService: StateService) {
+  constructor(public navCtrl: NavController, public toastCtrl: ToastController, private stateService: StateService) {
     
   }
 
@@ -34,18 +29,18 @@ export class ContactPage implements OnInit, OnDestroy {
       },0);
     });
 
-    // TODO type this message!
-    this.startQuizConnection = this.socketService.getStartQuizEvent().subscribe((message: any) => {
-      console.log('Quiz: start quiz received', message);
-
-      this.presentToast('Quiz has started, please go to tab Quiz!');
+    // Subscribe to stateService observables regarding starting/stopping a quiz
+    this.stateService.quizStarted.subscribe(quizStarted => {
+      setTimeout(() => {
+      console.log('🔥 Contact: this.quizStarted', quizStarted);
+      //if (quizStarted) this.presentToast('Quiz has started, please go to tab Quiz!');
+      },0);
     });
-
-    // TODO type this message!
-    this.stopQuizConnection = this.socketService.getStopQuizEvent().subscribe((message: any) => {
-      console.log('Quiz: stop quiz received', message);
-
-      this.presentToast('Quiz ended! Maybe the luck be with you!');
+    this.stateService.quizStopped.subscribe(quizStopped => {
+      setTimeout(() => {
+      console.log('🔥 Contact: this.quizStopped', quizStopped);
+      //if (quizStopped) this.presentToast('Quiz ended! Maybe the luck be with you!');
+      },0);
     });
   }
 

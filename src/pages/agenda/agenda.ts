@@ -3,8 +3,6 @@ import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrateg
 import { NavController, ToastController, ActionSheetController } from 'ionic-angular';
 
 // Services (they have to be added to the providers array in ../../app.component.ts)
-import { FHService } from '../../services/fh.service';
-import { SocketService } from '../../services/socket.service';
 import { StateService } from '../../services/state.service';
 
 // Model
@@ -24,11 +22,7 @@ export class AgendaPage implements OnInit, OnDestroy {
 
   viewActive: boolean = false;
 
-  // Observables...
-  startQuizConnection;
-  stopQuizConnection;
-
-  constructor(private cd: ChangeDetectorRef, public navCtrl: NavController, public toastCtrl: ToastController, public actionSheetCtrl: ActionSheetController, private socketService: SocketService, private fhService: FHService, private stateService: StateService) {
+  constructor(private cd: ChangeDetectorRef, public navCtrl: NavController, public toastCtrl: ToastController, public actionSheetCtrl: ActionSheetController, private stateService: StateService) {
 
   }
 
@@ -68,20 +62,22 @@ export class AgendaPage implements OnInit, OnDestroy {
       },0);
     });
 
+    // Subscribe to stateService observables regarding starting/stopping a quiz
+    this.stateService.quizStarted.subscribe(quizStarted => {
+      setTimeout(() => {
+      console.log('🔥 Agenda: this.quizStarted', quizStarted);
+      //if (quizStarted) this.presentToast('Quiz has started, please go to tab Quiz!');
+      },0);
+    });
+    this.stateService.quizStopped.subscribe(quizStopped => {
+      setTimeout(() => {
+      console.log('🔥 Agenda: this.quizStopped', quizStopped);
+      //if (quizStopped) this.presentToast('Quiz ended! Maybe the luck be with you!');
+      },0);
+    });
+
     // Get current events for today
     this.stateService.getEventsForToday();
-
-    // TODO type this message!
-    this.startQuizConnection = this.socketService.getStartQuizEvent().subscribe((message: any) => {
-      console.log('Quiz: start quiz received', message);
-      this.presentToast('Quiz has started, please go to tab Quiz!');
-    });
-
-    // TODO type this message!
-    this.stopQuizConnection = this.socketService.getStopQuizEvent().subscribe((message: any) => {
-      console.log('Quiz: stop quiz received', message);
-      this.presentToast('Quiz ended! Maybe the luck be with you!');
-    });
   }
 
   // 

@@ -21,10 +21,6 @@ export class QuizPage implements OnInit, OnDestroy {
   // Is view active?
   viewActive: boolean = false;
 
-  // Observables...
-  startQuizConnection;
-  stopQuizConnection;
-
   constructor (platform: Platform, public navCtrl: NavController, public toastCtrl: ToastController, private socketService: SocketService, private stateService: StateService) {
     platform.ready().then(() => {
       platform.pause.subscribe(() => {
@@ -42,18 +38,24 @@ export class QuizPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.stateService.fetchLiveQuiz();
 
-    // TODO type this message!
-    this.startQuizConnection = this.socketService.getStartQuizEvent().subscribe((message: any) => {
-      console.log('Quiz: start quiz received', message);
-
-      this.presentToast('Quiz has started, let\'s go down the rabbit hole!');
+    // Subscribe to stateService observables regarding starting/stopping a quiz
+    this.stateService.quizStarted.subscribe(quizStarted => {
+      setTimeout(() => {
+      console.log('🔥 Quiz: this.quizStarted', quizStarted);
+      //if (quizStarted) this.presentToast('Let\'s go down the rabbit hole!');
+      },0);
     });
-
-    // TODO type this message!
-    this.stopQuizConnection = this.socketService.getStopQuizEvent().subscribe((message: any) => {
-      console.log('Quiz: stop quiz received', message);
-
-      this.presentToast('Quiz ended! Maybe the luck be with you!');
+    this.stateService.quizEnded.subscribe(quizEnded => {
+      setTimeout(() => {
+      console.log('🔥 Quiz: this.quizEnded', quizEnded);
+      //if (quizEnded) this.presentToast('Last question received!');
+      },0);
+    });
+    this.stateService.quizStopped.subscribe(quizStopped => {
+      setTimeout(() => {
+      console.log('🔥 Quiz: this.quizStopped', quizStopped);
+      //if (quizStopped) this.presentToast('Quiz ended! Maybe the luck be with you!');
+      },0);
     });
   }
 

@@ -57,6 +57,9 @@ export class StateService implements OnInit, OnDestroy {
   private _quizEnded: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public readonly quizEnded: Observable<boolean> = this._quizEnded.asObservable();
 
+  private _quizStopped: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public readonly quizStopped: Observable<boolean> = this._quizStopped.asObservable();
+
   // Sockets
   questionsConnection;
   startQuizConnection;
@@ -86,13 +89,13 @@ export class StateService implements OnInit, OnDestroy {
         // Let's re-join the live quiz (room) for this event (this is a new socket...)
         let liveQuizId = this._event.getValue().id + this._event.getValue().quizId;
         this.socketService.joinLiveQuiz(liveQuizId);
+        this.presentToast('Successfully reconnected');
       }
     });
   }
 
   ngOnInit() {
-    console.log('StateService->ngOnInit()');
-    
+    console.log('StateService->ngOnInit()'); 
   }
 
   // Let's subscribe our Observable sockets
@@ -108,6 +111,8 @@ export class StateService implements OnInit, OnDestroy {
       this.fetchLiveQuiz();
       this._quizStarted.next(true);
       this._quizEnded.next(false);
+
+      this.presentToast('Quiz started! Let\'s go down the rabbit hole!');
     });
 
     // Get questions as they are released
@@ -134,12 +139,17 @@ export class StateService implements OnInit, OnDestroy {
 
       this._quizStarted.next(false);
       this._quizEnded.next(true);
+      this._quizStopped.next(true);
+
+      this.presentToast('Quiz ended! Maybe the luck be with you!');
     });
 
     this.lastQuestionConnection = this.socketService.getLastQuestionEvent().subscribe((message: any) => {
       // TODO type this message!
       console.log('StateService: last-question received', message);
       this._quizEnded.next(true);
+
+      this.presentToast('Last question received!');
     });
   }
 
