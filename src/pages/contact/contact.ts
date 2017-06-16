@@ -21,11 +21,19 @@ export class ContactPage implements OnInit, OnDestroy {
   stopQuizConnection;
 
   constructor(public navCtrl: NavController, public toastCtrl: ToastController, private socketService: SocketService, private stateService: StateService) {
-    this.hashtag = this.stateService.getHashtag ();
+    
   }
 
   // 
   ngOnInit() {
+    this.stateService.eventHashtag.subscribe(value => {
+      setTimeout(() => {
+      this.hashtag = value; 
+      console.log('🔥 Contact: this.hashtag', this.hashtag);
+      //this.cd.detectChanges();
+      },0);
+    });
+
     // TODO type this message!
     this.startQuizConnection = this.socketService.getStartQuizEvent().subscribe((message: any) => {
       console.log('Quiz: start quiz received', message);
@@ -59,7 +67,6 @@ export class ContactPage implements OnInit, OnDestroy {
     this.viewActive = false;
     console.log("ContacPage >>>>>>> inactive");
   }
-
 
   presentToast(message) {
     if (this.viewActive) {

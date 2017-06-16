@@ -1,3 +1,5 @@
+import { ToastController } from 'ionic-angular';
+
 import { Injectable, OnInit, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from "rxjs/Rx";
@@ -12,9 +14,28 @@ import { FHService } from './fh.service';
 import { Event } from '../model/event';
 import { LiveQuiz } from '../model/live-quiz';
 import { Question } from '../model/question';
+import { Agenda } from '../model/agenda';
 
 @Injectable()
 export class StateService implements OnInit, OnDestroy {
+  private _eventsForToday: BehaviorSubject<Array<Event>> = new BehaviorSubject(new Array<Event>());
+  public readonly eventsForToday: Observable<Array<Event>> = this._eventsForToday.asObservable();
+
+  private _event: BehaviorSubject<Event> = new BehaviorSubject(null);
+  public readonly event: Observable<Event> = this._event.asObservable();
+
+  private _eventAgenda: BehaviorSubject<Agenda> = new BehaviorSubject(null);
+  public readonly eventAgenda: Observable<Agenda> = this._eventAgenda.asObservable();
+
+  private _eventHashtag: BehaviorSubject<string> = new BehaviorSubject(null);
+  public readonly eventHashtag: Observable<string> = this._eventHashtag.asObservable();
+
+  private _eventId: BehaviorSubject<string> = new BehaviorSubject(null);
+  public readonly eventId: Observable<string> = this._eventId.asObservable();
+
+  private _quizId: BehaviorSubject<string> = new BehaviorSubject(null);
+  public readonly quizId: Observable<string> = this._quizId.asObservable();
+
   private _liveQuiz: BehaviorSubject<LiveQuiz> = new BehaviorSubject(new LiveQuiz(-1, null));
   public readonly liveQuiz: Observable<LiveQuiz> = this._liveQuiz.asObservable();
 
@@ -30,10 +51,17 @@ export class StateService implements OnInit, OnDestroy {
   private _currentAnswer: BehaviorSubject<number> = new BehaviorSubject(-1);
   public readonly currentAnswer: Observable<number> = this._currentAnswer.asObservable();
 
+  private _quizStarted: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public readonly quizStarted: Observable<boolean> = this._quizStarted.asObservable();
+
+  private _quizEnded: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public readonly quizEnded: Observable<boolean> = this._quizEnded.asObservable();
+
   // Sockets
   questionsConnection;
   startQuizConnection;
   stopQuizConnection;
+  lastQuestionConnection;
 
   state = Immutable.Map({
     username: null,
@@ -46,7 +74,7 @@ export class StateService implements OnInit, OnDestroy {
     userRoles: null
   });
   
-  constructor(private fhService: FHService, private socketService: SocketService) {
+  constructor(public toastCtrl: ToastController, private fhService: FHService, private socketService: SocketService) {
     console.log('New StateService!!!!');
     this.socketService.ready.subscribe(ready => {
       if (ready) {
@@ -68,7 +96,11 @@ export class StateService implements OnInit, OnDestroy {
     this.startQuizConnection = this.socketService.getStartQuizEvent().subscribe((message: any) => {
       // TODO type this message!
       console.log('StateService: start quiz received', message);
-      this.fetchLiveQuiz(this.getEventId(), this.getQuizId());
+
+      // Let's get some usefull data about the quiz...
+      this.fetchLiveQuiz();
+      this._quizStarted.next(true);
+      this._quizEnded.next(false);
     });
 
     // Get questions as they are released
@@ -92,6 +124,15 @@ export class StateService implements OnInit, OnDestroy {
       this._currentQuestion.next(null);
       this._currentQuestionIndex.next(-1);
       this._currentAnswer.next(-1);
+
+      this._quizStarted.next(false);
+      this._quizEnded.next(true);
+    });
+
+    this.lastQuestionConnection = this.socketService.getLastQuestionEvent().subscribe((message: any) => {
+      // TODO type this message!
+      console.log('StateService: last-question received', message);
+      this._quizEnded.next(true);
     });
   }
 
@@ -102,10 +143,10 @@ export class StateService implements OnInit, OnDestroy {
     this.stopQuizConnection.unsubscribe();
   }
 
-  fetchLiveQuiz(eventId: string, quizId: string) {
+  fetchLiveQuiz() {
     console.log('Before calling getQuizById endpoint');
 
-    this.fhService.getLiveQuizById(eventId, quizId)
+    this.fhService.getLiveQuizById(this._eventId.getValue(), this._quizId.getValue())
     .then( (liveQuiz) => {
       this._liveQuiz.next(liveQuiz);
 
@@ -120,8 +161,8 @@ export class StateService implements OnInit, OnDestroy {
 
   submitAnswerForCurrentQuestion(answer: number) {
     this.fhService.submitAnswer(
-      this.getEventId(), 
-      this.getQuizId(), 
+      this._eventId.getValue(), 
+      this._quizId.getValue(), 
       this.getUsername(), 
       this.getDepartment(), 
       this._currentQuestionIndex.getValue(), 
@@ -138,36 +179,53 @@ export class StateService implements OnInit, OnDestroy {
     });
   }
 
+  selectEvent(event) {
+    if (event) {
+      this._event.next(event);
+      this._eventHashtag.next(event.hashtag);
+      this._eventAgenda.next(event.agenda);
+      this._eventId.next(event.id);
+      this._quizId.next(event.quizId);
+
+      // Let's join the live quiz (room) for this event
+      let liveQuizId = this._event.getValue().id + this._event.getValue().quizId;
+      this.socketService.joinLiveQuiz(liveQuizId);
+    }
+  }
+
+  getEventsForToday() {
+    //this.fhService.getEventsAtLocationForToday('SPAIN', 'MADRID')
+    this.fhService.getEventsForDate(new Date())
+    .then( (events) => {
+      this._eventsForToday.next(events);
+    })
+    .catch( (err) => {
+      console.error(err);
+      // TODO: core error message and toast
+    });
+  }
+
+  startQuiz() {
+    console.log('Before calling startQuiz');
+    this.socketService.startQuiz(this._eventId.getValue(), this._quizId.getValue());
+  }
+
+  stopQuiz() {
+    console.log('Before calling stopQuiz');
+    this.socketService.stopQuiz(this._eventId.getValue(), this._quizId.getValue());
+  }
+
+  nextQuestion() {
+    console.log('Before calling nextQuestion');
+    this.socketService.nextQuestion(this._eventId.getValue(), this._quizId.getValue());
+  }
+
   getUsername() {
     return this.state.get('username');
   }
 
   getDepartment() {
     return this.state.get('department');
-  }
-
-  getEvents() {
-    return this.state.get('events');
-  }
-
-  getEvent() {
-    return this.state.get('event');
-  }
-
-  getHashtag() {
-    return this.state.get('hashtag');
-  }
-
-  getEventId() {
-    return this.state.get('eventId');
-  }
-
-  getQuizId() {
-    return this.state.get('quizId');
-  }
-
-  getLiveQuiz() {
-    return this.state.get('liveQuiz');
   }
 
   getUserRoles() {
@@ -182,31 +240,15 @@ export class StateService implements OnInit, OnDestroy {
     this.state = this.state.merge({ department: department });
   }
 
-  updateEvents(events: Event[]) {
-    this.state = this.state.merge({ events: events });
-  }
-
-  updateEvent(events: Event) {
-    this.state = this.state.merge({ event: event });
-  }
-
-  updateHashtag(hashtag: string) {
-    this.state = this.state.merge({ hashtag: hashtag });
-  }
-
-  updateEventId(eventId: string) {
-    this.state = this.state.merge({ eventId: eventId });
-  }
-
-  updateQuizId(quizId: string) {
-    this.state = this.state.merge({ quizId: quizId });
-  }
-
-  updateLiveQuiz(liveQuiz: LiveQuiz) {
-    this.state = this.state.merge({ liveQuiz: liveQuiz });
-  }
-
   updateUserRoles(userRoles: string[]) {
     this.state = this.state.merge({ userRoles: userRoles });
+  }
+
+  presentToast(message) {
+    let toast = this.toastCtrl.create({
+      message: message,
+      duration: 3000
+    });
+    toast.present();
   }
 }

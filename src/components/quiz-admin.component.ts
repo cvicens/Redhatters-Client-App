@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 
 // Model
 import { Quiz } from '../model/quiz';
@@ -18,27 +18,24 @@ import { LiveQuiz } from '../model/live-quiz';
 export class QuizAdminComponent implements OnInit, OnDestroy {
   quizStarted: boolean = false;
   quizEnded: boolean = false;
-  startQuizConnection;
-  stopQuizConnection;
-  lastQuestionConnection;
 
-  constructor(private socketService: SocketService, private stateService: StateService) {
+  constructor(private cd: ChangeDetectorRef, private socketService: SocketService, private stateService: StateService) {
 
   }
 
   startQuiz() {
     console.log('Before calling startQuiz');
-    this.socketService.startQuiz(this.stateService.getEventId(), this.stateService.getQuizId());
+    this.stateService.startQuiz();
   }
 
   stopQuiz() {
     console.log('Before calling stopQuiz');
-    this.socketService.stopQuiz(this.stateService.getEventId(), this.stateService.getQuizId());
+    this.stateService.stopQuiz();
   }
 
   nextQuestion() {
     console.log('Before calling nextQuestion');
-    this.socketService.nextQuestion(this.stateService.getEventId(), this.stateService.getQuizId());
+    this.stateService.nextQuestion();
   }
 
   nextButtonEnabled () {
@@ -48,29 +45,26 @@ export class QuizAdminComponent implements OnInit, OnDestroy {
 
   // Let's subscribe our Observable
   ngOnInit() {
-    // TODO type this message!
-    this.startQuizConnection = this.socketService.getStartQuizEvent().subscribe((message: any) => {
-      console.log('QuizAdmin: start-quiz received', message);
-      this.quizStarted = true;
-      this.quizEnded = false;
+    // Subscribe to stateService observables
+    this.stateService.quizStarted.subscribe(value => {
+      setTimeout(() => {
+      this.quizStarted = value; 
+      console.log('🔥 QuizAdmin: this.quizStarted', this.quizStarted);
+      this.cd.detectChanges();
+      },0);
     });
-    this.stopQuizConnection = this.socketService.getStopQuizEvent().subscribe((message: any) => {
-      console.log('QuizAdmin: stop-quiz received', message);
-      this.quizStarted = false;
-      this.quizEnded = true;
-    });
-
-    this.lastQuestionConnection = this.socketService.getLastQuestionEvent().subscribe((message: any) => {
-      console.log('QuizAdmin: last-question received', message);
-      this.quizEnded = true;
+    this.stateService.quizEnded.subscribe(value => {
+      setTimeout(() => {
+      this.quizEnded = value; 
+      console.log('🔥 QuizAdmin: this.quizEnded', this.quizEnded);
+      this.cd.detectChanges();
+      },0);
     });
   }
 
   // Let's unsubscribe our Observable
   ngOnDestroy() {
-    this.startQuizConnection.unsubscribe();
-    this.stopQuizConnection.unsubscribe();
-    this.lastQuestionConnection.unsubscribe();
+    
   }
 
 }

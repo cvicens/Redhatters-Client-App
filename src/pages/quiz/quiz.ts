@@ -25,14 +25,14 @@ export class QuizPage implements OnInit, OnDestroy {
   startQuizConnection;
   stopQuizConnection;
 
-  constructor (platform: Platform, public navCtrl: NavController, public toastCtrl: ToastController, private fhService: FHService, private socketService: SocketService, private stateService: StateService) {
+  constructor (platform: Platform, public navCtrl: NavController, public toastCtrl: ToastController, private socketService: SocketService, private stateService: StateService) {
     platform.ready().then(() => {
       platform.pause.subscribe(() => {
         
       });
       platform.resume.subscribe(() => {
         this.presentToast('App resumed...');
-        this.stateService.fetchLiveQuiz(this.stateService.getEventId(), this.stateService.getQuizId());
+        this.stateService.fetchLiveQuiz();
         //this.getQuizById(this.stateService.getEventId(), this.stateService.getQuizId());
       });
     });
@@ -40,7 +40,7 @@ export class QuizPage implements OnInit, OnDestroy {
 
   //  
   ngOnInit() {
-    this.getQuizById(this.stateService.getEventId(), this.stateService.getQuizId());
+    this.stateService.fetchLiveQuiz();
 
     // TODO type this message!
     this.startQuizConnection = this.socketService.getStartQuizEvent().subscribe((message: any) => {
@@ -85,22 +85,5 @@ export class QuizPage implements OnInit, OnDestroy {
       toast.present();
     }
   } 
-
-  getQuizById(eventId: string, quizId: string) {
-    console.log('Before calling getQuizById endpoint');
-
-    this.message = 'Before calling...';
-
-    this.fhService.getLiveQuizById(eventId, quizId)
-    .then( (quiz) => {
-      this.stateService.updateLiveQuiz(quiz);
-      this.quiz = quiz;
-    })
-    .catch( (err) => {
-      console.log(err);
-      this.message = JSON.stringify(err);
-    });
-
-  }
 
 }

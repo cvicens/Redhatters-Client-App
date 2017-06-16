@@ -3,6 +3,9 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from "rxjs/Rx";
 
+// Model
+import { Event } from '../model/event';
+
 // Services
 import { FHService } from './fh.service';
 
@@ -19,7 +22,7 @@ var STOP_QUIZ_KO_MESSAGE  = 'stop-quiz-ko';
 var NEXT_QUESTION_MESSAGE = 'next-question';
 var NEW_QUESTION_MESSAGE  = 'new-question';
 var LAST_QUESTION_MESSAGE = 'last-question';
-var JOIN_QUIZ_MESSAGE = 'last-question';
+var JOIN_QUIZ_MESSAGE     = 'join-quiz';
 
 @Injectable()
 export class SocketService {
@@ -61,9 +64,14 @@ export class SocketService {
     this.socket.emit('add-message', message);   
   }
 
-  joinLiveQuiz(quizId){
-    // Make sure the "add-message" is written here because this is referenced in on() in our server
-    this.socket.emit(JOIN_QUIZ_MESSAGE, {quizId: quizId});   
+  joinLiveQuiz(liveQuizId: string){
+    if (liveQuizId) {
+      // Send join message including our socket id and event data
+      this.socket.emit(JOIN_QUIZ_MESSAGE, {liveQuizId: liveQuizId}, (ack) => {
+        console.log('💬 Ack joining room', liveQuizId, '=>', ack);
+        console.log('💬 Rooms', this.socket);
+      });
+    }
   }
 
   getQuestions() {

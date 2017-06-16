@@ -52,12 +52,12 @@ export class QuizComponent implements OnInit, OnDestroy {
     return this.currentAnswer >= 0 && !this.currentAnswerSubmitted();
   }
 
-  getLiveQuizById(eventId: string, quizId: string) {
+  getLiveQuizById() {
     console.log('Before calling getQuizById endpoint');
 
     this.message = 'Before calling...';
 
-    this.stateService.fetchLiveQuiz(eventId, quizId);
+    this.stateService.fetchLiveQuiz();
 
   }
 
@@ -92,7 +92,7 @@ export class QuizComponent implements OnInit, OnDestroy {
     });
 
     // Get current live quiz data
-    this.getLiveQuizById(this.stateService.getEventId(), this.stateService.getQuizId());
+    this.getLiveQuizById();
   }
 
   // Let's unsubscribe our Observable

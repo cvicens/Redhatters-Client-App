@@ -24,14 +24,22 @@ export class QuizAdminPage {
 
   // 
   ngOnInit() {
-    this.getQuizById(this.stateService.getQuizId());
+    //this.getQuizById(this.stateService.getQuizId());
+    // Subscribe to stateService observables
+    this.stateService.liveQuiz.subscribe(value => {
+      setTimeout(() => {
+      this.quiz = value.quiz; 
+      console.log('🔥🔥🔥 Quiz Admin remove this logic... QuizAdmin: this.quiz', this.quiz);
+      //this.cd.detectChanges();
+      },0);
+    });
   }
 
   // 
   ngOnDestroy() {
   }
 
-  getQuizById(id: string) {
+  getQuizByIdOld(id: string) {
     console.log('Before calling getQuizById endpoint');
 
     this.message = 'Before calling...';
