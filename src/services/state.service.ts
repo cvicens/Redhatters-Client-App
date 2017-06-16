@@ -81,6 +81,13 @@ export class StateService implements OnInit, OnDestroy {
         this.initSockets();
       }
     });
+    this.socketService.reconnected.subscribe(data => {
+      if (data) {
+        // Let's re-join the live quiz (room) for this event (this is a new socket...)
+        let liveQuizId = this._event.getValue().id + this._event.getValue().quizId;
+        this.socketService.joinLiveQuiz(liveQuizId);
+      }
+    });
   }
 
   ngOnInit() {

@@ -13,6 +13,7 @@ import { FHService } from './fh.service';
 import * as io from 'socket.io-client';
 
 // Messages
+var RECONNECT_MESSAGE    = 'reconnect';
 var START_QUIZ_MESSAGE    = 'start-quiz';
 var START_QUIZ_OK_MESSAGE = 'start-quiz-ok';
 var START_QUIZ_KO_MESSAGE = 'start-quiz-ko';
@@ -33,6 +34,9 @@ export class SocketService {
   // Ready flag
   private _ready: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public readonly ready: Observable<boolean> = this._ready.asObservable();
+
+  private _reconnected: BehaviorSubject<any> = new BehaviorSubject(null);
+  public readonly reconnected: Observable<any> = this._reconnected.asObservable();
 
   constructor(private fhService: FHService) {
     console.log('New SocketService!!!!');
@@ -56,6 +60,12 @@ export class SocketService {
     //this.url = "http://localhost:8001";
     this.socket = io(this.url);
     console.log('SocketService.url', this.url);
+    
+    this.socket.on(RECONNECT_MESSAGE, (data) => {
+      console.log('🛰 SUCCESSFUL RECONNECTION', data);
+      this._reconnected.next(data);
+    });
+
     return true;
   }
 
@@ -69,7 +79,6 @@ export class SocketService {
       // Send join message including our socket id and event data
       this.socket.emit(JOIN_QUIZ_MESSAGE, {liveQuizId: liveQuizId}, (ack) => {
         console.log('💬 Ack joining room', liveQuizId, '=>', ack);
-        console.log('💬 Rooms', this.socket);
       });
     }
   }
