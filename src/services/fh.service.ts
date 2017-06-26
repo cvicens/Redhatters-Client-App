@@ -9,8 +9,7 @@ import {Md5} from 'ts-md5/dist/md5';
 
 import * as $fh from 'fh-js-sdk';
 
-const READY_EVENT = 'fhready';
-const INIT_EVENT = 'fhready';
+const INIT_EVENT = 'fhinit';
 
 @Injectable()
 export class FHService {
@@ -23,7 +22,6 @@ export class FHService {
       console.log('Service ready with url:', this.getUrl());
       this._ready.next(true);
     });
-    //$fh.once(READY_EVENT, (event) => {console.log('22222222222222', this.getUrl())});
   }
 
   getFormattedTime(date) {

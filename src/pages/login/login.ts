@@ -37,8 +37,8 @@ export class LoginPage {
 
       this.message = 'Before calling...';
 
-      this.fhService.login(this.loginForm.value.username, this.loginForm.value.password)
-      //this.fhService.auth(this.loginForm.value.username, this.loginForm.value.password)
+      //this.fhService.login(this.loginForm.value.username, this.loginForm.value.password)
+      this.fhService.auth(this.loginForm.value.username, this.loginForm.value.password)
       .then( (result) => {
         // Lets update the state of the app...
         this.stateService.updateUsername(this.loginForm.value.username);
